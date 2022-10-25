@@ -14,14 +14,16 @@ ustawa_followed_list = []
 ustawa_notfollowed_list = []
 ustawa_zmiana_list = []
 
-pattern_additions = r'(dodaje)\s*(się)\s*((\bart)|(\blp)|(\bust)|(\brozdział)|(\bpoz)|(\blit)|(\bdział)|(\bpkt)|(\b§)|(\b[1-9]))[^:"]*((\b)|(\s))'
-pattern_removal = r'(((skreśla\s+się)|(uchyla\s+się))\s+((\bart)|(\blp)|(\bw\s)|(\bust)|(\brozdział)|(\bpoz)|(\blit)|(\bdział)|(\bpkt)|(\b§)|(\b[1-9]))[^:,;.]*)|(((\bart)|(\blp)|(\bw\s)|(\bust)|(\brozdział)|(\bpoz)|(\blit)|(\bdział)|(\bpkt)|(\b§)|(\b[1-9]))[^:,;.]*((skreśla\s+się)|(uchyla\s+się))\s+(?![a-z]))'
-pattern_change = r'((\bart)|(\blp)|(\bw\s)|(\bust)|(\brozdział)|(\bpoz)|(\blit)|(\bdział)|(\bpkt)|(\b§))[a-z1-9 .,:;]*((\botrzymuje)|(\botrzymują))\s*(\bbrzmienie)'
+pattern_core = r'((\bart)|(\blp)|(\bw\b)|(\bust)|(\brozdział)|(\bpoz)|(\blit)|(\bdział)|(\bpkt)|(\b§)|(\b[1-9]))'
+pattern_additions = fr'(dodaje)\s*(się)\s*{pattern_core}[^:"]*((\b)|(\s))'
+pattern_removal = fr'(((skreśla\s+się)|(uchyla\s+się))\s+{pattern_core}[^:,;.]*)|({pattern_core}[^:,;.]*((skreśla\s+się)|(uchyla\s+się))\s+(?![a-z]))'
+pattern_change = fr'{pattern_core}[a-z1-9 .,:;]*((\botrzymuje)|(\botrzymują))\s*(\bbrzmienie)'
 pattern_date = r'(\bz)\s+(dnia)\s+\d{1,2}\s+[a-zźś]{1,12}\s+\d{4}\s+(r.)'
-pattern_ustawa = r'\bustaw((a\b)|(y\b)|(ie\b)|(ę\b)|(ą\b)|(o\b)|(y\b)|(\b)|(om\b)|(ami\b)|(ach\b))'
-pattern_ustawa_followed = r'\bustaw((a\b)|(y\b)|(ie\b)|(ę\b)|(ą\b)|(o\b)|(y\b)|(\b)|(om\b)|(ami\b)|(ach\b))\s*z\s*(\bdnia\b)'
-pattern_ustawa_notfollowed = r'\bustaw((a\b)|(y\b)|(ie\b)|(ę\b)|(ą\b)|(o\b)|(y\b)|(\b)|(om\b)|(ami\b)|(ach\b))\s+(?!z\s+dnia)'
-pattern_ustawa_zmiana = r'[^o]\s*(?<!zmianie)\s+\bustaw((a\b)|(y\b)|(ie\b)|(ę\b)|(ą\b)|(o\b)|(y\b)|(\b)|(om\b)|(ami\b)|(ach\b))\s+(?!z\s+dnia)\b'
+ustawa_core = r'\bustaw((a\b)|(y\b)|(ie\b)|(ę\b)|(ą\b)|(o\b)|(y\b)|(\b)|(om\b)|(ami\b)|(ach\b))'
+pattern_ustawa = fr'{ustawa_core}'
+pattern_ustawa_followed = fr'{ustawa_core}(?=\s+z\s+dnia\b)'
+pattern_ustawa_notfollowed = fr'{ustawa_core}(?!\s+z\s+dnia\b)'
+pattern_ustawa_zmiana = fr'[^o]\s*(?<!zmianie)\s+{ustawa_core}'
 
 for file in listdir("ustawy"):
     with open(f'ustawy/{file}') as f:
@@ -72,7 +74,14 @@ plt.show()
 
 df2 = pd.DataFrame(data=data2)
 df2 = df2.groupby(['year']).sum()
+df2 = df2.sum()
 print(df2)
+
+all = df2['ustawa_list']- df2['ustawa_followed_list']- df2['ustawa_notfollowed_list']
+print(f"roznica:{all}")
+
+
+
 
 N = len(df2.index)
 ind = np.arange(N)
@@ -97,4 +106,5 @@ plt.title("Numbers")
 plt.xticks(ind + width, df2.index)
 plt.legend((bar1, bar2, bar3, bar4), ('ustawa', 'z dnia', 'bez z dnia', 'o zmianie'))
 plt.show()
+
 
