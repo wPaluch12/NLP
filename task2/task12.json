@@ -1,0 +1,19 @@
+{
+  "query": {
+    "match": {
+       "content": {
+         "query": "konstytucja"
+       }
+    }
+},
+  "sort" : ["_score"],
+  "highlight": {
+    "fields":
+    {
+      "content" : {
+        "number_of_fragments" : 3
+      }
+    }
+  }
+}
+

@@ -1,0 +1,11 @@
+{
+  "doc": {
+    "content": "ustawa",
+    "analyzer": "my_analyzer"
+  },
+  "fields": ["content"],
+  "term_statistics": true,
+  "offsets":false,
+  "payloads":false,
+  "positions":false
+}

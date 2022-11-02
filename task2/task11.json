@@ -1,0 +1,10 @@
+{
+  "query": {
+    "match": {
+       "content": {
+         "query": "konstytucja"
+       }
+    }
+},
+  "sort" : ["_score"]
+}

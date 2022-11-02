@@ -1,0 +1,7 @@
+{
+  "query": {
+  "match_phrase": {
+  "content": { "query": "kodeksie postępowania cywilnego"}
+}
+}
+}
